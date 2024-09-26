@@ -51,9 +51,68 @@ async function accessPostByID(req,res){
     }
 }
 
+// delete post by id
+async function deletePostByID(req,res){
+  try{
+     const posts = await Post.findByIdAndDelete(req.params.id)
+     if(!posts){
+        res.status(404).json({message: "Page Not Found"})
+     }
+     res.json({message: "Page Removed Successfully"})
+  }
+  catch(err){
+    console.log(err.message);
+    res.status(500).send("Server Error")
+  }
+}
+
+// update post by id
+async function updatePostByID(req,res){
+    
+    const {title, content} = req.body;
+
+    try{
+    let posts = await Post.findById(req.params.id);
+
+    if(!posts){
+        res.status(404).json({message:"Page Not Found"})
+    }
+    posts.title = title
+    posts.content = content
+
+    const updatedPost  = await posts.save()
+    res.json(updatedPost)
+    }
+catch(err){
+     console.log(err.message)
+     res.status(500).send("Server Error")
+}    
+}
+
+async function handleSignup(req,res){
+   const {userName, email, password} = req.body
+   try{
+       const name = await user.findOne({userName})
+
+       if(name){
+        res.status(400).json("User Already Exists")
+       }
+       
+       const newUser = new user({userName, email, password})
+       await newUser.save();
+       res.json({message: "SignUp successfully done"})
+   }
+   catch(err){
+     console.log(err.message);
+     res.status(500).send("Server Error")
+   }
+}
 
 module.exports = {
     createPost,
     accessPost,
     accessPostByID,
+    deletePostByID,
+    updatePostByID,
+    handleSignup,
 }

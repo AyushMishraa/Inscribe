@@ -19,13 +19,14 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-// middleware for hashing password
-const saltRounds = 10
-const myPassword = this.password;
-userSchema.pre('save', async (next)=>{
+userSchema.pre('save', async function(next){
+
    if(!this.isModified('password')){
       return next();
    }
+   // middleware for hashing password
+    const saltRounds = 10
+    const myPassword = this.password;
    const salt = await bcrypt.genSalt(saltRounds)
    this.password = await bcrypt.hash(myPassword, salt);
    next();
