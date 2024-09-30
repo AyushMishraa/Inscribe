@@ -1,5 +1,6 @@
 const Post = require("../models/post")
 const user = require("../models/user")
+const jwt = require("jsonwebtoken")
 
 // create blog post and saved in database
 async function createPost(req,res){
@@ -108,6 +109,21 @@ async function handleSignup(req,res){
    }
 }
 
+async function handleLogin(req, res){
+  const {userName, password} = req.body;
+  try{
+    const User = await user.findOne({userName});
+     if(!User){
+        res.status(404).json({message:"User Not Found"})
+     }
+
+  }
+  catch(err){
+    console.log(err.message);
+    res.status(500).send("Server Error")
+  }
+}
+
 module.exports = {
     createPost,
     accessPost,
@@ -115,4 +131,5 @@ module.exports = {
     deletePostByID,
     updatePostByID,
     handleSignup,
+    handleLogin,
 }
