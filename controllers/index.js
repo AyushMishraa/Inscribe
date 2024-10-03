@@ -84,10 +84,11 @@ async function updatePostByID(req,res){
     const updatedPost  = await posts.save()
     res.json(updatedPost)
     }
-catch(err){
+
+    catch(err){
      console.log(err.message)
      res.status(500).send("Server Error")
-}    
+    }    
 }
 
 async function handleSignup(req,res){
@@ -116,7 +117,15 @@ async function handleLogin(req, res){
      if(!User){
         res.status(404).json({message:"User Not Found"})
      }
+    const isMatch = await User.comparePassword(password)
+    if(!isMatch){
+       res.status(404).json({message:"Wrong Password"})
+    }
 
+    const token = jwt.sign({email:  User.userName}, process.env.SECRET);
+    console.log(token);
+    res.cookie("token",token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.status(200).json({token});
   }
   catch(err){
     console.log(err.message);

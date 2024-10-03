@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 // const mongoose = require("mongoose");
 const connectDB = require("./connection");
 const BlogPosts = require("./routers/index")
@@ -12,6 +13,7 @@ connectDB();
 
 //middleware
 app.use(express.json());
+app.use(cookieParser())
 
 //routes
 app.use('/api/posts',BlogPosts);
